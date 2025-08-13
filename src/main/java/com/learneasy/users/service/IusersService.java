@@ -1,18 +1,18 @@
 package com.learneasy.users.service;
 
-import com.learneasy.users.model.User;
+import com.learneasy.users.model.MyUser;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IusersService {
-    public  User save(User user);
+    public MyUser save(MyUser myUser);
 
-    List<User> findAll();
+    List<MyUser> findAll();
 
-    Optional<User> findById(long id);
+    Optional<MyUser> findById(long id);
 
-    Optional<User> findByname(String name);
+    Optional<MyUser> findByname(String name);
 
-    Optional<User> findByUserKey(String userKey);
+    Optional<MyUser> findByUserKey(String userKey);
 }

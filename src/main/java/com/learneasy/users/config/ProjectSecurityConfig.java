@@ -23,21 +23,22 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests((requests) -> requests.
-        requestMatchers("api/users/fetchAll").authenticated()
-                .requestMatchers("/error").permitAll());
+        http.csrf(csr -> csr.disable()).
+                authorizeHttpRequests((requests) -> requests.
+                requestMatchers("api/users/fetchAll").authenticated()
+                .requestMatchers("/api/users/create").authenticated());
 //                .requestMatchers(HttpMethod.POST,"api/users/create").authenticated());
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
     }
-    @Bean
-    public UserDetailsService userDetailsService()
-    {
-        UserDetails user = User.withUsername("user").password("{noop}12345").authorities("read").build();
-        UserDetails user1 = User.withUsername("admin").password("{bcrypt}$2a$12$eoyQA90FpDMkFZDqGwI4PuPJyqkR63Vgjw7iVAAzOFD0paD6sLvNC").authorities("admin").build();
-        return new InMemoryUserDetailsManager(user,user1);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService()
+//    {
+//        UserDetails user = User.withUsername("user").password("{noop}12345").authorities("read").build();
+//        UserDetails user1 = User.withUsername("admin").password("{bcrypt}$2a$12$eoyQA90FpDMkFZDqGwI4PuPJyqkR63Vgjw7iVAAzOFD0paD6sLvNC").authorities("admin").build();
+//        return new InMemoryUserDetailsManager(user,user1);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
