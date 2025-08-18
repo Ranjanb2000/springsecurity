@@ -1,6 +1,8 @@
 package com.learneasy.users.config;
 
 
+import com.learneasy.users.exceptionhandling.CustomAccessDeniedHandler;
+import com.learneasy.users.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,13 +25,19 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(csr -> csr.disable()).
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession").maximumSessions(1).maxSessionsPreventsLogin(true))
+                .redirectToHttps(rcc -> rcc.disable())
+                .csrf(csr -> csr.disable()).
                 authorizeHttpRequests((requests) -> requests.
                 requestMatchers("api/users/fetchAll").authenticated()
-                .requestMatchers("/api/users/create").authenticated());
+                .requestMatchers("/api/users/create").denyAll()
+                .requestMatchers("/invalidSession").permitAll());
+
 //                .requestMatchers(HttpMethod.POST,"api/users/create").authenticated());
         http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint
+                (new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc ->ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 //    @Bean
